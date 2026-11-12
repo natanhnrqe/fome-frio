@@ -1,0 +1,87 @@
+
+[
+  {
+    "id": "registro_autentico",
+    "simbolo": "P",
+    "descricao": "O registro de retirada da luneta feito por Marco é autêntico.",
+    "expressao": "P"
+  },
+  {
+    "id": "registro_confirma_retirada",
+    "simbolo": "P → Q",
+    "descricao": "Se o registro é autêntico, então Alizandro retirou a luneta.",
+    "expressao": "P >> Q"
+  },
+  {
+    "id": "luneta_modificada",
+    "simbolo": "R",
+    "descricao": "A luneta de Marco foi modificada.",
+    "expressao": "R"
+  },
+  {
+    "id": "luneta_e_retirada",
+    "simbolo": "(R ∧ Q) → S",
+    "descricao": "Se a luneta foi modificada e Alizandro a retirou, então Alizandro matou Ciro.",
+    "expressao": "(R & Q) >> S"
+  },
+  {
+    "id": "faca_inocentada",
+    "simbolo": "¬U",
+    "descricao": "A faca de Armando não causou o ferimento de Ciro.",
+    "expressao": "~U"
+  },
+  {
+    "id": "faca_nao_implica_assassinato",
+    "simbolo": "¬U → ¬T",
+    "descricao": "Se a faca de Armando não causou o ferimento, então Armando não matou Ciro.",
+    "expressao": "~U >> ~T"
+  },
+  {
+    "id": "alternativa_assassino",
+    "simbolo": "T ∨ S",
+    "descricao": "Ou Armando matou Ciro ou Alizandro matou Ciro.",
+    "expressao": "T | S"
+  },
+  {
+    "id": "cleber_viu_medico",
+    "simbolo": "W",
+    "descricao": "Cleber viu o médico transportando a luneta.",
+    "expressao": "W"
+  },
+  {
+    "id": "visao_confirma_transporte",
+    "simbolo": "W → X",
+    "descricao": "Se Cleber viu o médico transportando a luneta, então a proposição X é verdadeira.",
+    "expressao": "W >> X"
+  },
+  {
+    "id": "premissa_y",
+    "simbolo": "Y",
+    "descricao": "Premissa Y da investigação sobre a morte de Cleber.",
+    "expressao": "Y"
+  },
+  {
+    "id": "abandono_no_frio",
+    "simbolo": "Z",
+    "descricao": "Cleber foi abandonado deliberadamente no frio.",
+    "expressao": "Z"
+  },
+  {
+    "id": "hipotermia",
+    "simbolo": "H",
+    "descricao": "Cleber sofreu hipotermia.",
+    "expressao": "H"
+  },
+  {
+    "id": "abandono_causou_morte",
+    "simbolo": "(Z ∧ H) → I",
+    "descricao": "Se Cleber foi abandonado no frio e sofreu hipotermia, então morreu em decorrência desse abandono.",
+    "expressao": "(Z & H) >> I"
+  },
+  {
+    "id": "retirada_invalida_alibi",
+    "simbolo": "Q → ¬V",
+    "descricao": "Se Alizandro retirou a luneta, então seu álibi é falso.",
+    "expressao": "Q >> ~V"
+  }
+]

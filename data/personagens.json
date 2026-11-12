@@ -1,0 +1,59 @@
+
+[
+  {
+    "id": "alizandro",
+    "nome": "Alizandro Pelo",
+    "cargo": "Médico",
+    "nacionalidade": "Alemão",
+    "arma": "Seringa médica"
+  },
+  {
+    "id": "marco",
+    "nome": "Marco Polos",
+    "cargo": "Navegador",
+    "nacionalidade": "Espanhol",
+    "arma": "Luneta de latão"
+  },
+  {
+    "id": "armando",
+    "nome": "Armando Cazinha",
+    "cargo": "Caçador",
+    "nacionalidade": "Inuí­te",
+    "arma": "Faca de caça"
+  },
+  {
+    "id": "cleber",
+    "nome": "Cleber Ber",
+    "cargo": "Faxineiro",
+    "nacionalidade": "Latino",
+    "arma": "Garrafa quebrada"
+  },
+  {
+    "id": "ciro",
+    "nome": "Ciro Longue",
+    "cargo": "Fuzileiro Naval",
+    "nacionalidade": "Italiano",
+    "arma": "Rifle naval"
+  },
+  {
+    "id": "edi",
+    "nome": "Edi Ficio",
+    "cargo": "Engenheiro",
+    "nacionalidade": "Escocês",
+    "arma": "Chave inglesa"
+  },
+  {
+    "id": "lee",
+    "nome": "Lee Maonada",
+    "cargo": "Cozinheiro",
+    "nacionalidade": "Coreano",
+    "arma": "Faca de cozinha"
+  },
+  {
+    "id": "pery",
+    "nome": "Pery Siga",
+    "cargo": "Imediato",
+    "nacionalidade": "Britânico",
+    "arma": "Espada do imediato"
+  }
+]
