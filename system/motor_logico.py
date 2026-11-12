@@ -6,9 +6,14 @@ from sympy.logic.boolalg import And, Or, Not, Implies
 
 
 class MotorLogico:
-
     def __init__(self):
         self.variaveis = {}
+        self.premissas = []
+        self.historico = []
+
+    # --------------------------------------------------
+    # INTERPRETAÇÃO DAS EXPRESSÕES
+    # --------------------------------------------------
 
     def obter_variavel(self, nome: str):
         if nome not in self.variaveis:
@@ -17,9 +22,8 @@ class MotorLogico:
         return self.variaveis[nome]
 
     def interpretar(self, expressao: str):
-        """
-        Converte uma expressão textual em uma expressão lógica SymPy.
-        """
+        if not isinstance(expressao, str):
+            raise TypeError("A expressão deve ser uma string.")
 
         try:
             arvore = ast.parse(expressao, mode="eval")
@@ -39,7 +43,6 @@ class MotorLogico:
             return Not(self._interpretar_no(no.operand))
 
         if isinstance(no, ast.BinOp):
-
             esquerda = self._interpretar_no(no.left)
             direita = self._interpretar_no(no.right)
 
@@ -54,74 +57,112 @@ class MotorLogico:
 
         raise ValueError("Operação lógica não permitida.")
 
-    def converter_premissa(self, premissa):
-        """
-        Aceita tanto uma expressão textual quanto um objeto Pista.
-        """
+    # --------------------------------------------------
+    # CONVERSÃO E CADASTRO DE PREMISSAS
+    # --------------------------------------------------
 
+    def converter_premissa(self, premissa):
+        # Já é uma expressão lógica do SymPy.
+        if isinstance(premissa, (Symbol, And, Or, Not, Implies)):
+            return premissa
+
+        # É um objeto Pista.
         if hasattr(premissa, "expressao"):
             premissa = premissa.expressao
 
         if not isinstance(premissa, str):
-            raise TypeError("A premissa deve ser uma string ou uma Pista.")
+            raise TypeError(
+                "A premissa deve ser uma string, "
+                "uma Pista ou uma expressão lógica do SymPy."
+            )
 
         return self.interpretar(premissa)
 
-    def modus_ponens(self, premissa1, premissa2):
-        """
-        P, P -> Q  =>  Q
-        """
+    def adicionar_premissa(self, premissa, origem="Premissa"):
+        expressao = self.converter_premissa(premissa)
 
+        if expressao not in self.premissas:
+            self.premissas.append(expressao)
+
+            self.historico.append({
+                "tipo": "premissa",
+                "origem": origem,
+                "expressao": expressao
+            })
+
+            return True
+
+        return False
+
+    # --------------------------------------------------
+    # REGRAS DE INFERÊNCIA
+    # --------------------------------------------------
+
+    def modus_ponens(self, premissa1, premissa2):
         p1 = self.converter_premissa(premissa1)
         p2 = self.converter_premissa(premissa2)
 
-        if p1.func == Implies and p1.args[0] == p2:
+        if isinstance(p1, Implies) and p1.args[0] == p2:
             return p1.args[1]
 
-        if p2.func == Implies and p2.args[0] == p1:
+        if isinstance(p2, Implies) and p2.args[0] == p1:
             return p2.args[1]
 
         return None
 
-    def silogismo_disjuntivo(self, premissa1, premissa2):
-        """
-        P v Q, ~P  =>  Q
-        """
 
+    def silogismo_disjuntivo(self, premissa1, premissa2):
         p1 = self.converter_premissa(premissa1)
         p2 = self.converter_premissa(premissa2)
 
-        if p1.func == Or and p2.func == Not:
-            if p2.args[0] in p1.args:
-                return next(
-                    item for item in p1.args
-                    if item != p2.args[0]
-                )
+        if isinstance(p1, Or) and isinstance(p2, Not):
+            disjuncao = p1
+            negacao = p2
 
-        if p2.func == Or and p1.func == Not:
-            if p1.args[0] in p2.args:
-                return next(
-                    item for item in p2.args
-                    if item != p1.args[0]
-                )
+        elif isinstance(p2, Or) and isinstance(p1, Not):
+            disjuncao = p2
+            negacao = p1
 
-        return None
+        else:
+            return None
+
+        alternativas = list(disjuncao.args)
+        alternativa_negada = negacao.args[0]
+
+        if alternativa_negada not in alternativas:
+            return None
+
+        restantes = [
+            alternativa
+            for alternativa in alternativas
+            if alternativa != alternativa_negada
+        ]
+
+        if len(restantes) == 0:
+            return None
+
+        if len(restantes) == 1:
+            return restantes[0]
+
+        return Or(*restantes)
+
 
     def conjuncao(self, premissa1, premissa2):
-        """
-        P, Q  =>  P & Q
-        """
-
         p1 = self.converter_premissa(premissa1)
         p2 = self.converter_premissa(premissa2)
 
         return And(p1, p2)
 
-    def aplicar_regra(self, regra: str, premissa1, premissa2):
-        """
-        Executa a regra de inferência solicitada.
-        """
+    # --------------------------------------------------
+    # APLICAÇÃO E REGISTRO DAS REGRAS
+    # --------------------------------------------------
 
+    def aplicar_regra(
+        self,
+        regra: str,
+        premissa1,
+        premissa2
+    ):
         regras = {
             "modus_ponens": self.modus_ponens,
             "silogismo_disjuntivo": self.silogismo_disjuntivo,
@@ -131,7 +172,56 @@ class MotorLogico:
         if regra not in regras:
             raise ValueError(f"Regra desconhecida: {regra}")
 
-        return regras[regra](premissa1, premissa2)
+        resultado = regras[regra](premissa1, premissa2)
+
+        if resultado is None:
+            return None
+
+        self.historico.append({
+            "tipo": "deducao",
+            "regra": regra,
+            "premissas": [
+                self.converter_premissa(premissa1),
+                self.converter_premissa(premissa2)
+            ],
+            "resultado": resultado
+        })
+
+        return resultado
+
+    def registrar_deducao(self, expressao):
+        resultado = self.converter_premissa(expressao)
+
+        if resultado in self.premissas:
+            return False
+
+        self.premissas.append(resultado)
+
+        self.historico.append({
+            "tipo": "deducao_registrada",
+            "resultado": resultado
+        })
+
+        return True
+
+    # --------------------------------------------------
+    # CONSULTAS
+    # --------------------------------------------------
+
+    def verificar_conclusao(self, conclusao) -> bool:
+        expressao = self.converter_premissa(conclusao)
+        return expressao in self.premissas
+
+    def listar_premissas(self):
+        return list(self.premissas)
+
+    def obter_historico(self):
+        return list(self.historico)
+
+    def limpar(self):
+        self.premissas.clear()
+        self.historico.clear()
+        self.variaveis.clear()
 
     def formatar_expressao(self, expressao):
         return str(expressao)

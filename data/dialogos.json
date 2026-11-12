@@ -1,0 +1,31 @@
+
+[
+  {
+    "id": "alizandro_inicio",
+    "personagem_id": "alizandro",
+    "falante": "npc",
+    "fala": "Você deseja conversar comigo? Estou à disposição.",
+    "escolhas": [
+      {
+        "texto": "Quero fazer algumas perguntas.",
+        "resposta": "Tudo bem. Pode perguntar.",
+        "proxima_etapa": "alizandro_perguntas",
+        "pista_id": null
+      }
+    ]
+  },
+  {
+    "id": "alizandro_perguntas",
+    "personagem_id": "alizandro",
+    "falante": "npc",
+    "fala": "O que você gostaria de saber?",
+    "escolhas": [
+      {
+        "texto": "Por enquanto, é só isso.",
+        "resposta": "Estarei por aqui caso precise de mais alguma coisa.",
+        "proxima_etapa": null,
+        "pista_id": null
+      }
+    ]
+  }
+]

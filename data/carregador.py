@@ -6,6 +6,39 @@ from models.personagem import Personagem
 from models.pista import Pista
 
 
+from models.dialogos import Dialogo, EscolhaDialogo
+
+
+def carregar_dialogos() -> dict[str, Dialogo]:
+    dados = carregar_json("dialogos.json")
+
+    dialogos = {}
+
+    for dado in dados:
+        escolhas = [
+            EscolhaDialogo(
+                texto=escolha["texto"],
+                resposta=escolha["resposta"],
+                proxima_etapa=escolha.get("proxima_etapa"),
+                pista_id=escolha.get("pista_id")
+            )
+            for escolha in dado["escolhas"]
+        ]
+
+        dialogo = Dialogo(
+            id=dado["id"],
+            personagem_id=dado.get("personagem_id"),
+            falante=dado["falante"],
+            fala=dado["fala"],
+            escolhas=escolhas
+        )
+
+        dialogos[dialogo.id] = dialogo
+
+    return dialogos
+
+
+
 def carregar_json(nome_arquivo: str):
     caminho = Path(__file__).with_name(nome_arquivo)
 
@@ -32,9 +65,9 @@ def carregar_personagens() -> dict[str, Personagem]:
     return personagens
 
 
+
 def carregar_pistas() -> dict[str, Pista]:
     dados = carregar_json("pistas.json")
-
     pistas = {}
 
     for dado in dados:
@@ -42,7 +75,8 @@ def carregar_pistas() -> dict[str, Pista]:
             id=dado["id"],
             simbolo=dado["simbolo"],
             descricao=dado["descricao"],
-            expressao=dado["expressao"]
+            expressao=dado["expressao"],
+            significado=dado.get("significado", dado["descricao"])
         )
 
         pistas[pista.id] = pista

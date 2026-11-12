@@ -29,21 +29,21 @@ class SistemaDialogo:
         return dialogo.escolhas
 
     def selecionar_escolha(self, indice: int):
-        if self.encerrado:
-            raise RuntimeError("Não existe uma conversa ativa.")
-
         dialogo = self.obter_dialogo_atual()
+
+        if dialogo is None:
+            raise RuntimeError("Não existe uma conversa ativa.")
 
         if indice < 0 or indice >= len(dialogo.escolhas):
             raise IndexError("Escolha inválida.")
 
         escolha = dialogo.escolhas[indice]
-
-        proxima_etapa = escolha.get("proxima_etapa")
+        proxima_etapa = escolha.proxima_etapa
 
         if proxima_etapa is None:
             self.dialogo_atual_id = None
             self.encerrado = True
+
         else:
             if proxima_etapa not in self.dialogos:
                 raise ValueError(
@@ -57,5 +57,5 @@ class SistemaDialogo:
     def reiniciar(self, dialogo_inicial_id: str):
         self.iniciar(dialogo_inicial_id)
 
-    def esta_encerrado(self):
+    def esta_encerrado(self) -> bool:
         return self.encerrado

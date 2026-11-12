@@ -1,38 +1,68 @@
 
-from systems.motor_logico import MotorLogico
+from system.motor_logico import MotorLogico
+
 
 motor = MotorLogico()
 
-# MODUS PONENS
-resultado = motor.modus_ponens("P", "P >> Q")
+# Premissas iniciais
+motor.adicionar_premissa("P", origem="Premissa 1")
+motor.adicionar_premissa("P >> Q", origem="Premissa 2")
 
-print("Modus Ponens:", resultado)
-# Q
+# Modus Ponens:
+# P
+# P -> Q
+# Portanto, Q
 
+resultado = motor.aplicar_regra(
+    "modus_ponens",
+    "P",
+    "P >> Q"
+)
 
-# SILOGISMO DISJUNTIVO
-resultado = motor.silogismo_disjuntivo("T | S", "~T")
+assert resultado == motor.interpretar("Q")
+print("Modus Ponens:", motor.formatar_expressao(resultado))
 
-print("Silogismo Disjuntivo:", resultado)
-# S
+motor.registrar_deducao(resultado)
 
-
-# CONJUNÇÃO
-resultado = motor.conjuncao("R", "Q")
-
-print("Conjunção:", resultado)
-# Q & R
-
-
-# TESTE DE INFERÊNCIA INVÁLIDA
-resultado = motor.modus_ponens("P", "Q >> R")
-
-print("Inferência inválida:", resultado)
-# None
+assert motor.verificar_conclusao("Q")
 
 
-# CONCLUSÃO FINAL
-resultado = motor.conjuncao("S", "I")
+# Silogismo Disjuntivo:
+# R ou S
+# Não R
+# Portanto, S
 
-print("Conclusão:", resultado)
-# I & S
+resultado = motor.aplicar_regra(
+    "silogismo_disjuntivo",
+    "R | S",
+    "~R"
+)
+
+assert resultado == motor.interpretar("S")
+print("Silogismo Disjuntivo:", motor.formatar_expressao(resultado))
+
+motor.registrar_deducao(resultado)
+
+
+# Conjunção:
+# A
+# B
+# Portanto, A e B
+
+resultado = motor.aplicar_regra(
+    "conjuncao",
+    "A",
+    "B"
+)
+
+assert resultado == motor.interpretar("A & B")
+print("Conjunção:", motor.formatar_expressao(resultado))
+
+
+# Histórico
+print("\n===== HISTÓRICO =====")
+
+for etapa in motor.obter_historico():
+    print(etapa)
+
+print("\nTodos os testes passaram!")
