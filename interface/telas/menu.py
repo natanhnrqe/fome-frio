@@ -1,6 +1,7 @@
 
 import pygame
 import pygame_gui
+from interface.recursos import fundo
 
 
 class TelaMenu:
@@ -39,7 +40,7 @@ class TelaMenu:
         pass
 
     def desenhar(self, superficie):
-        superficie.fill((18, 27, 38))
+        fundo(superficie, "ilha.png", 115)
 
         fonte = pygame.font.Font(None, 90)
         fonte_subtitulo = pygame.font.Font(None, 32)

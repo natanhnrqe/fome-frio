@@ -18,6 +18,12 @@ class TelaInvestigacao:
     def entrar(self):
         self.painel.entrar()
 
+        self.status = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect(350, 620, 580, 40),
+            text="Demonstre todas as conclusões para resolver o caso.",
+            manager=self.manager
+        )
+
         self.botao_voltar = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect(20, 20, 200, 50),
             text="VOLTAR AO LOCAL",
@@ -40,6 +46,7 @@ class TelaInvestigacao:
         self.painel.sair()
         self.historico.fechar()
 
+
         self.botao_voltar.kill()
         self.botao_historico.kill()
         self.botao_resolver.kill()
@@ -58,7 +65,7 @@ class TelaInvestigacao:
                 return
 
             if evento.ui_element == self.botao_resolver:
-                self.jogo.gerenciador_telas.mudar_tela("resolucao")
+                self.tentar_abrir_resolucao()
                 return
 
         if not self.historico.aberto:
@@ -70,3 +77,15 @@ class TelaInvestigacao:
     def desenhar(self, superficie):
         superficie.fill((18, 27, 38))
         self.painel.desenhar(superficie)
+
+    def tentar_abrir_resolucao(self):
+        resultado = self.jogo.partida.tentar_resolver()
+
+        if resultado["resolvido"]:
+            self.jogo.gerenciador_telas.mudar_tela("resolucao")
+        else:
+            pendencias = ", ".join(resultado["pendencias"])
+
+            self.status.set_text(
+                f"Conclusões pendentes: {pendencias}"
+            )

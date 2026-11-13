@@ -35,6 +35,8 @@ class Jogo:
 
         self.partida = None
         self.local_atual = None
+        self.mensagem = ""
+        self.mensagem_expira = 0
 
         self.gerenciador_telas = GerenciadorTelas()
 
@@ -62,9 +64,12 @@ class Jogo:
         self.gerenciador_telas.mudar_tela("menu")
 
     def iniciar_partida(self):
-        self.partida = ControladorPartida()
-
-        self.gerenciador_telas.mudar_tela("mapa")
+        try:
+            self.partida = ControladorPartida()
+            self.local_atual = None
+            self.gerenciador_telas.mudar_tela("mapa")
+        except Exception as erro:
+            self.notificar(f"Falha ao iniciar partida: {erro}")
 
     def acessar_local(self, local_id):
         sucesso = self.partida.acessar_local(local_id)
@@ -89,8 +94,14 @@ class Jogo:
     def voltar_menu(self):
         self.partida = None
         self.local_atual = None
+        self.mensagem = ""
+        self.mensagem_expira = 0
 
         self.gerenciador_telas.mudar_tela("menu")
+
+    def notificar(self, mensagem):
+        self.mensagem = str(mensagem)
+        self.mensagem_expira = pygame.time.get_ticks() + 5000
 
     def encerrar(self):
         self.executando = False
@@ -131,6 +142,14 @@ class Jogo:
             self.gerenciador_telas.desenhar(self.tela)
 
             self.interface.draw_ui(self.tela)
+
+            if self.mensagem and pygame.time.get_ticks() < self.mensagem_expira:
+                fonte = pygame.font.SysFont("arial", 19)
+                texto = fonte.render(self.mensagem, True, (245, 235, 210))
+                pygame.draw.rect(self.tela, (15, 20, 26), pygame.Rect(100, 675, 1080, 32))
+                self.tela.blit(texto, (115, 681))
+            elif self.mensagem:
+                self.mensagem = ""
 
             pygame.display.flip()
 

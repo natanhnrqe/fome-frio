@@ -171,13 +171,13 @@ class PainelDeducao:
         try:
             resultado = self.jogo.partida.tentar_resolver()
 
-            if resultado:
-                self.atualizar_status(
-                    "Caso resolvido! Investigação concluída."
-                )
+            if resultado["resolvido"]:
+                mensagem = resultado["mensagem"]
             else:
-                self.atualizar_status(
-                    "Ainda existem conclusões pendentes."
+                mensagem = (
+                        resultado["mensagem"]
+                        + "\nPendências: "
+                        + ", ".join(resultado["pendencias"])
                 )
 
         except (ValueError, TypeError) as erro:

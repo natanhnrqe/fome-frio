@@ -1,6 +1,7 @@
 
 import pygame
 import pygame_gui
+from interface.recursos import fundo
 
 
 class TelaMapa:
@@ -72,7 +73,7 @@ class TelaMapa:
         pass
 
     def desenhar(self, superficie):
-        superficie.fill((18, 27, 38))
+        fundo(superficie, "ilha.png", 125)
 
         fonte_titulo = pygame.font.Font(None, 65)
         fonte_descricao = pygame.font.Font(None, 30)
